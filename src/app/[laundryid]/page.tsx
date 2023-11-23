@@ -40,7 +40,7 @@ export default function DetailLaundryPage({
    h-[100vh] flex items-center justify-center
      "
    style={{
-    backgroundImage: 'url("/anime-bg.jpg")',
+    backgroundImage: 'url("/laundry.jpg")',
    }}
   >
    <div className="sm:mx-auto sm:w-full sm:max-w-md">
