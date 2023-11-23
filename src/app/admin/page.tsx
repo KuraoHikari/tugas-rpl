@@ -11,7 +11,7 @@ import ky from "ky";
 import { useQuery } from "@tanstack/react-query";
 import { catchError } from "@/lib/utils";
 
-export async function getLaundrys() {
+async function getLaundrys() {
  const res = await ky.get("api/laundry");
  const users = (await res.json()) as dataLinkTreeType;
  return users;

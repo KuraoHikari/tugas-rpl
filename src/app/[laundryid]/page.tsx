@@ -6,7 +6,7 @@ import { catchError } from "@/lib/utils";
 import KwitansiLaundry from "@/components/DetailKwitansi";
 import { LaundryColumn } from "../admin/adminTable/columns";
 
-export async function getLaundry(laundryid: string) {
+async function getLaundry(laundryid: string) {
  const res = await ky.get(`/api/laundry/${laundryid}`);
  const users = (await res.json()) as dataLaundryType;
  return users;
