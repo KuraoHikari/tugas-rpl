@@ -14,15 +14,47 @@ import {
  Copy,
  Edit,
  FolderOpen,
+ FolderOpenIcon,
  MoreHorizontal,
+ Send,
  Trash,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/useModalStore";
+import Link from "next/link";
 
 interface CellActionProps {
  data: LaundryColumn;
+}
+
+// Fungsi untuk membuat link wa.me
+function createWaMeLink(payload: LaundryColumn) {
+ // Menggunakan fungsi encodeURI untuk mengubah spasi menjadi %20
+ let text = `KWITANSI LAUNDRY
+=================
+
+ID                : ${payload.id_kwitansi_laundry}
+Nama Pelanggan    : ${payload.nama_pelanggan}
+Nomor Telepon     : ${payload.nomor_telephone_pelanggan}
+Total Berat       : ${payload.total_berat} kg
+Status            : ${payload.status}
+Harga             : Rp. ${payload.harga},-
+Lokasi Penyimpanan: ${payload.lokasi_penyimpanan}
+Jumlah Pakaian    : ${payload.jumlah_pakaian}
+Link              : ${
+  process.env.NEXT_PUBLIC_LINK + payload.id_kwitansi_laundry
+ }
+
+Terima kasih telah menggunakan jasa laundry kami.`;
+ let encodedMessage = encodeURI(text);
+ // Mengembalikan link wa.me dengan nomor telepon dan pesan yang sudah di-encode
+ return (
+  "https://wa.me/" +
+  payload.nomor_telephone_pelanggan +
+  "?text=" +
+  encodedMessage
+ );
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -50,11 +82,43 @@ export const CellAction: React.FC<CellActionProps> = ({
    <DropdownMenuContent align="end">
     <DropdownMenuLabel>Actions</DropdownMenuLabel>
     <DropdownMenuItem onClick={() => {}}>
-     <Copy className="mr-2 h-4 w-4" /> Copy{" "}
-     {data.id_kwitansi_laundry}
+     <Link
+      className="flex"
+      target="_blank"
+      rel="noopener noreferrer"
+      href={data.id_kwitansi_laundry}
+     >
+      <FolderOpenIcon className="mr-2 h-4 w-4" /> View{" "}
+      {data.id_kwitansi_laundry}
+     </Link>
+    </DropdownMenuItem>
+    <DropdownMenuItem
+     onClick={() =>
+      onOpen("editLaundry", {
+       laundry: data,
+      })
+     }
+    >
+     <Edit className="mr-2 h-4 w-4" /> Edit
+    </DropdownMenuItem>
+    <DropdownMenuItem
+     onClick={() =>
+      onOpen("editStatusLaundry", {
+       laundry: data,
+      })
+     }
+    >
+     <Edit className="mr-2 h-4 w-4" /> Edit Status
     </DropdownMenuItem>
     <DropdownMenuItem onClick={() => {}}>
-     <Edit className="mr-2 h-4 w-4" /> Edit
+     <Link
+      className="flex"
+      target="_blank"
+      rel="noopener noreferrer"
+      href={createWaMeLink(data)}
+     >
+      <Send className="mr-2 h-4 w-4" /> Send Info
+     </Link>
     </DropdownMenuItem>
    </DropdownMenuContent>
   </DropdownMenu>

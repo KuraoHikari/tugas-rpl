@@ -1,11 +1,21 @@
 import { create } from "zustand";
 
-export type ModalType = "createLaundry";
+export type ModalType =
+ | "createLaundry"
+ | "editLaundry"
+ | "editStatusLaundry";
 
 interface ModalData {
- linkTree?: {
-  title: string;
-  description: string;
+ laundry?: {
+  id_kwitansi_laundry: string;
+  nama_pelanggan: string;
+  nomor_telephone_pelanggan: string;
+  total_berat: number;
+  status: string;
+  harga: number;
+  lokasi_penyimpanan: string;
+  jumlah_pakaian: number;
+  createdAt: string;
  };
 }
 

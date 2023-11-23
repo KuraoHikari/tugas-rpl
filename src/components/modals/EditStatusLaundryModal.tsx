@@ -45,6 +45,7 @@ import {
  ChevronsUpDown,
  Loader2,
 } from "lucide-react";
+import { useEffect } from "react";
 
 const formSchema = laundrySchema.omit({
  id_kwitansi_laundry: true,
@@ -59,11 +60,13 @@ const status = [
  { label: "dibayar", value: "dibayar" },
 ] as const;
 
-export const CreateLaundryModal = () => {
- const { isOpen, onClose, type } = useModal();
+export const EditStatusLaundryModal = () => {
+ const { isOpen, onClose, type, data } = useModal();
  const queryClient = useQueryClient();
 
- const isModalOpen = isOpen && type === "createLaundry";
+ const isModalOpen = isOpen && type === "editStatusLaundry";
+
+ const { laundry } = data;
 
  const form = useForm({
   resolver: zodResolver(formSchema),
@@ -77,6 +80,23 @@ export const CreateLaundryModal = () => {
    jumlah_pakaian: 0,
   },
  });
+ useEffect(() => {
+  if (laundry) {
+   form.setValue("nama_pelanggan", laundry.nama_pelanggan);
+   form.setValue(
+    "nomor_telephone_pelanggan",
+    laundry.nomor_telephone_pelanggan
+   );
+   form.setValue("total_berat", laundry.total_berat);
+   form.setValue("status", laundry.status);
+   form.setValue("harga", laundry.harga);
+   form.setValue(
+    "lokasi_penyimpanan",
+    laundry.lokasi_penyimpanan
+   );
+   form.setValue("jumlah_pakaian", laundry.jumlah_pakaian);
+  }
+ }, [laundry, form]);
 
  const isLoading = form.formState.isSubmitting;
 
@@ -84,7 +104,11 @@ export const CreateLaundryModal = () => {
   values: z.infer<typeof formSchema>
  ) => {
   try {
-   await ky.post("/api/laundry", { json: values }).json();
+   await ky
+    .patch(`/api/laundry/${laundry?.id_kwitansi_laundry}`, {
+     json: values,
+    })
+    .json();
    await queryClient.invalidateQueries({
     queryKey: ["laundrys"],
     refetchType: "active",
@@ -108,7 +132,7 @@ export const CreateLaundryModal = () => {
    <DialogContent className="overflow-hidden">
     <DialogHeader>
      <DialogTitle className="text-2xl font-bold">
-      Create Laundry
+      Edit Status Kwitansi
      </DialogTitle>
     </DialogHeader>
     <Form {...form}>
@@ -121,7 +145,7 @@ export const CreateLaundryModal = () => {
         control={form.control}
         name="nama_pelanggan"
         render={({ field }) => (
-         <FormItem>
+         <FormItem className="hidden">
           <FormLabel>Name</FormLabel>
           <FormControl>
            <Input
@@ -138,7 +162,7 @@ export const CreateLaundryModal = () => {
         control={form.control}
         name="nomor_telephone_pelanggan"
         render={({ field }) => (
-         <FormItem>
+         <FormItem className="hidden">
           <FormLabel>Phone Number</FormLabel>
           <FormControl>
            <Input
@@ -155,7 +179,7 @@ export const CreateLaundryModal = () => {
         control={form.control}
         name="total_berat"
         render={({ field }) => (
-         <FormItem>
+         <FormItem className="hidden">
           <FormLabel>Total Berat</FormLabel>
           <FormControl>
            <Input
@@ -233,7 +257,7 @@ export const CreateLaundryModal = () => {
         control={form.control}
         name="harga"
         render={({ field }) => (
-         <FormItem>
+         <FormItem className="hidden">
           <FormLabel>Harga</FormLabel>
           <FormControl>
            <Input
@@ -251,7 +275,7 @@ export const CreateLaundryModal = () => {
         control={form.control}
         name="lokasi_penyimpanan"
         render={({ field }) => (
-         <FormItem>
+         <FormItem className="hidden">
           <FormLabel>Lokasi Penyimpanan</FormLabel>
           <FormControl>
            <Input
@@ -268,7 +292,7 @@ export const CreateLaundryModal = () => {
         control={form.control}
         name="jumlah_pakaian"
         render={({ field }) => (
-         <FormItem>
+         <FormItem className="hidden">
           <FormLabel>Jumlah Pakaian</FormLabel>
           <FormControl>
            <Input
@@ -289,7 +313,7 @@ export const CreateLaundryModal = () => {
         className="w-full gap-2"
         disabled={isLoading}
        >
-        Create
+        Save
         {isLoading && (
          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         )}

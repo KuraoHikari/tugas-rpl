@@ -34,6 +34,7 @@ export async function PATCH(
   });
 
   const body = await req.json();
+  console.log("🚀 ~ file: route.ts:37 ~ body:", body);
 
   const updateLaundryValidate =
    updateLaundrySchema.safeParse(body);
@@ -71,7 +72,7 @@ export async function PATCH(
     nomor_telephone_pelanggan:
      body.nomor_telephone_pelanggan,
     total_berat: body.total_berat,
-    status: body.staus,
+    status: body.status,
     harga: body.harga,
     lokasi_penyimpanan: body.lokasi_penyimpanan,
     jumlah_pakaian: body.jumlah_pakaian,
